@@ -7,7 +7,6 @@ from googleapiclient.errors import HttpError
 from email.mime.text import MIMEText
 import base64
 
-
 class Mailer:
     def __init__(self, sender):
         SCOPES = ['https://www.googleapis.com/auth/gmail.send']

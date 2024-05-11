@@ -6,6 +6,13 @@ class Checker:
         self.parseArguments(args)
 
     def runPipeline(self):
+        '''
+        Function for running the main checker pipeline. Checks for arguments and if any are present, appropriate action is taken, like displaying help or
+        updating config file. If no arguments are provided, a check will be run.
+
+        Returns None or a list consisting of check results. The list will either be empty if no new achievements were found or will contain dicts with
+        keys being emails assigned to particular checks and values being a list of strings disclosing game name and the number of new achievements.
+        '''
         # load config file #
         try:
             with open('config.json') as config_file:
@@ -31,12 +38,12 @@ class Checker:
             return None
 
         # execute general set commands if any #
-        for set_command in  ("set_steam_api_key", "set_provider_email_name", "set_provider_email_key"):
-            if set_command in self.arguments.keys():
-                self.config['general'][set_command.replace("set_", "")] = self.arguments[set_command]
-            
-            self.writeConfig()
-            print("General config updated.")
+        if any([x in self.arguments.keys() for x in ("set_steam_api_key", "set_provider_email_adress")]):
+            for set_command in ("set_steam_api_key", "set_provider_email_adress"):
+                if set_command in self.arguments.keys():
+                    self.config['general'][set_command.replace("set_", "")] = self.arguments[set_command]
+                    self.writeConfig()
+            print("General config updated.")    
             return None
 
         # create new check #
@@ -58,14 +65,14 @@ class Checker:
         print(
             '''
     This is a simple script for checking whether the number of achievements for games of interest have changed. If no commands are provided all checks will be run.
+    More information can be found in the README file.
 
     Available commands:
         -h, --help: Prints help information.
 
         Commands for setting general configuration:
         --set_steam_api_key [key]:         Sets your steam API key.
-        --set_provider_email_name [email]: Sets your email provider name.
-        --set_provider_email_key  [key]:   Sets your email provider key.
+        --set_provider_email_adress [email]: Sets your email provider adress.
 
         Commands for managing checks:
         --create_check: Creates new check. Must provide --check_name, --check_email and --check_games.
@@ -75,13 +82,16 @@ class Checker:
 
     def writeConfig(self):
         with open('config.json', 'w') as config_file:
-            json.dump(config, config_file, indent=4)
+            json.dump(self.config, config_file, indent=4)
+    
+    def writeAppdata(self):
+        with open("appdata.json", 'w') as appdata_file:
+            json.dump(self.appdata, appdata_file, indent=4)
 
     def parseArguments(self, args):
         optlist, args = getopt.getopt(args,
-                                    'h',
-                                    ['help',
-                                    "set_steam_api_key=", "set_provider_email_name=", "set_provider_email_key=",
+                                    'h', ['help',
+                                    "set_steam_api_key=", "set_provider_email_adress=",
                                     "create_check", "remove_check",
                                     "check_name=", "check_email=", "check_games="])
         arguments = {o[0].replace("-", ""): o[1] for o in optlist}
@@ -93,20 +103,20 @@ class Checker:
         
         self.config['checks'][name] = {
             'email': email,
-            'games': games.split(",").strip()
+            'games': [game.strip() for game in games.split(",")]
         }
 
         self.writeConfig()
-        print("New check created.")
+        print("Check created.")
 
-    def removeChecks(self, name):
-        if name not in config['checks'].keys():
+    def removeCheck(self, name):
+        if name not in self.config['checks'].keys():
             raise Exception(f'Check with name {name} does not exist.')
         
         del self.config['checks'][name]
         
         self.writeConfig()
-        print("Check removed")
+        print("Check removed.")
 
     def runChecks(self):
         checks_with_new_achievements = {}
@@ -139,15 +149,13 @@ class Checker:
                         'appid': str(game['appid']),
                         'n_achievements': None
                     }
-                
-                with open("appdata.json", 'w') as appdata_file:
-                    json.dump(self.appdata, appdata_file, indent=4)
 
+                self.writeAppdata()
 
             # go over games and download current number of achievements #
             for game in check['games']:
                 if game not in self.appdata.keys():
-                    print(f"Skipping {game}")
+                    print(f"Skipping {game}, no appid found")
                     continue
                 
                 # fetch new data from Steam API #
@@ -177,11 +185,9 @@ class Checker:
                     games_with_new_achievements.append(f"{game} has {n_achievements - self.appdata[game]['n_achievements']} new achievements")
                     self.appdata[game]['n_achievements'] = n_achievements
 
-            # if any new achievements are present, send email #
+            # if any new achievements are present, add to results list #
             if games_with_new_achievements:
                 checks_with_new_achievements[check['email']] = games_with_new_achievements
 
-        with open('appdata.json', 'w') as appdata_file:
-            json.dump(self.appdata, appdata_file, indent=4)
-                
+        self.writeAppdata()
         return checks_with_new_achievements
