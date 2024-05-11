@@ -182,7 +182,7 @@ class Checker:
                 if not self.appdata[game]['n_achievements']:
                     self.appdata[game]['n_achievements'] = n_achievements
                 elif self.appdata[game]['n_achievements'] != n_achievements:
-                    games_with_new_achievements.append(f"{game} has {n_achievements - self.appdata[game]['n_achievements']} new achievements")
+                    games_with_new_achievements.append(f"{game} has {n_achievements - self.appdata[game]['n_achievements']} new achievements.")
                     self.appdata[game]['n_achievements'] = n_achievements
 
             # if any new achievements are present, add to results list #

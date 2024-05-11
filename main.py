@@ -2,7 +2,6 @@ from checker import Checker
 from mailer import Mailer
 import sys, os, json
 
-
 if __name__ == "__main__":
     if not os.path.exists("config.json"):
         print("Configration file not found. You can download a template from the repository.\nRename template file to 'config.json' to start.")
