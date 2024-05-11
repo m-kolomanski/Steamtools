@@ -14,3 +14,6 @@ Checker will download data regarding specific games and check the number of avai
 
 ### Mailer
 Mailer is configured for gmail API and requires a valid *token.json* file from google cloud platform. Configuring this is beyond the scope of this script. You are free to use any other email services provider, but this will require rewriting the Mailer class.
+
+### Run
+After configuring the above, simply run `python ./main.py` for the checker to do its thing.
