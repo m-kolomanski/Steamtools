@@ -13,7 +13,7 @@ Steam API is based on internal appid. The script will check the list of games pr
 Checker will download data regarding specific games and check the number of available achievements. This will require configuring steam API key in the config file. Then, the number of currently available achievements will be compared with the number saved in *appdata.json* file. The main purpose of the script is to periodically check if new achievements are available and notify the user, so you need to keep that file intact in order for the Checker to work correctly. Checker will return an object with entry for each created check, which will then contain a list of string denoting game and number of new achievements.
 
 ### Mailer
-Mailer is configured for gmail API and requires a valid *token.json* file from google cloud platform. Configuring this is beyond the scope of this script. You are free to use any other email services provider, but this will require rewriting the Mailer class.
+Mailer is configured for gmail API and requires a valid app password file from google cloud platform set up in the `config.json` file. Configuring this is beyond the scope of this script. You are free to use any other email services provider, but this will require rewriting the Mailer class.
 
 ### Run
 After configuring the above, simply run `python ./main.py` for the checker to do its thing.

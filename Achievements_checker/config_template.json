@@ -1,7 +1,8 @@
 {
     "general": {
         "steam_api_key": "your_steam_api_key",
-        "provider_email_adress": "your_provider_email_adress"
+        "provider_email_adress": "your_provider_email_adress",
+        "email_password": "your_email_password"
     },
     "checks": {
         "check_name": {

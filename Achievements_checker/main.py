@@ -25,7 +25,7 @@ if __name__ == "__main__":
         with open("config.json") as config_file:
             config = json.load(config_file)
 
-        mailer = Mailer(config['general']['provider_email_adress'])
+        mailer = Mailer(config['general']['provider_email_adress'], config['general']['email_password'])
 
         for email, games_with_achievements in checker_res.items():
             resp = mailer.sendMessage(email, games_with_achievements)
