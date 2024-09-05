@@ -1,0 +1,19 @@
+{
+    "manifest_version": 2,
+    "name": "Steamgifts autoclicker",
+    "version": "0.1",
+  
+    "description": "Automatically joins and hides giveaways on steamgifts.com",
+
+    "permissions": [
+        "storage"
+    ],
+
+    "content_scripts": [
+      {
+        "matches": ["*://*.steamgifts.com/*"],
+        "js": ["autojoiner.js", "autohider.js"]
+      }
+    ]
+  }
+  
