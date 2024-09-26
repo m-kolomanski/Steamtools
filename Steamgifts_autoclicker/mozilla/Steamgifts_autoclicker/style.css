@@ -1,0 +1,18 @@
+.autojoiner-container {
+	background-color: #465670;
+	display: flex;
+	flex-direction: column;
+	padding: 1em;
+	margin: 1em 0 1em 0;
+	color: white;
+    font-weight: bold;
+	font-size: 1.3em;
+	text-shadow: none;
+	align-items: center;
+	border-radius: .5em;
+	gap: 1em;
+}
+
+#autojoiner-button {
+    width: 100%;
+}

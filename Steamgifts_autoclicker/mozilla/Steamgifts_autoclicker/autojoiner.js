@@ -47,7 +47,7 @@ sync_store.get('whitelist').then((res) => {
     const current_whitelist = res.whitelist;
     const giveaways_on_page = document.querySelectorAll("a.giveaway__heading__name");
 
-    let games_to_join = [];
+    let giveaways_to_join = [];
 
     giveaways_on_page.forEach((giveaway) => {
         const game_name = giveaway.href.split('/').at(-1);
@@ -57,15 +57,28 @@ sync_store.get('whitelist').then((res) => {
 
             // check if game is not already joined //
             if (!giveaway.parentElement.parentElement.parentElement.classList.contains('is-faded')) {
-                games_to_join.push(giveaway.href);
+                giveaways_to_join.push(giveaway.href);
             }
            
         }
     });
 
-    // TODO: display notification if there are games to join
-    console.log("detected games to join:")
-    console.log(games_to_join);
+    const n_giveaways = giveaways_to_join.length;
+    if (n_giveaways > 0) {
+        const sidebar = document.querySelector(".sidebar");
+
+        const notification = document.createElement("div");
+        notification.classList.add("autojoiner-container");
+        notification.innerHTML = `
+            <p>Detected ${n_giveaways} whitelisted giveaway${n_giveaways > 1 ? "s" : ""}.</p>
+            <button
+                id="autojoiner-button"
+                class="sidebar__entry-insert"
+            >Autojoin</button>
+        `;
+
+        sidebar.appendChild(notification);
+    }
 });
 
 
