@@ -14,6 +14,12 @@
         "matches": ["*://*.steamgifts.com/*"],
         "js": ["autojoiner.js", "autohider.js"]
       }
-    ]
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "s5628283e6a07185c944fb8ec432896d72785d81e@example.org"
+        }
+    }
   }
   
