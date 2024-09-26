@@ -11,6 +11,8 @@ sync_store.get('whitelist').then((res) => {
     }
 });
 
+// ADDING GAMES TO WHITELIST //
+
 /**
  * Adds an event listener to the "Enter" button for adding a game to the whitelist.
  * The button is selected using the `.sidebar__entry-insert` class. When clicked, 
@@ -20,7 +22,7 @@ sync_store.get('whitelist').then((res) => {
 const enter_button = document.querySelector(".sidebar__entry-insert");
 if (enter_button) {
     enter_button.addEventListener('click', () => {
-        const entered_name = document.querySelector(".featured__heading__medium").textContent;
+        const entered_name = window.location.pathname.split('/').at(-1);
         addGameToWhitelist(entered_name);
     });
 }
@@ -41,4 +43,3 @@ addGameToWhitelist = async function(game_name) {
         });
     }
 }
-
