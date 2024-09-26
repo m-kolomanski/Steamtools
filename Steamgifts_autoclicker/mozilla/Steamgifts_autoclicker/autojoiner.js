@@ -9,7 +9,6 @@ sync_store.get('whitelist').then((res) => {
 });
 
 // ADDING GAMES TO WHITELIST //
-
 /**
  * Adds an event listener to the "Enter" button for adding a game to the whitelist.
  * The button is selected using the `.sidebar__entry-insert` class. When clicked, 
@@ -41,7 +40,7 @@ addGameToWhitelist = async function(game_name) {
     }
 }
 
-// SCANNING FOR GAMES TO JOIN
+// SCANNING FOR GAMES TO JOIN //
 // TODO: make sure we do not fetch data on every page
 sync_store.get('whitelist').then((res) => {
     const current_whitelist = res.whitelist;
@@ -67,6 +66,7 @@ sync_store.get('whitelist').then((res) => {
     if (n_giveaways > 0) {
         const sidebar = document.querySelector(".sidebar");
 
+        // consctruct notification //
         const notification = document.createElement("div");
         notification.classList.add("autojoiner-container");
         notification.innerHTML = `
@@ -77,9 +77,54 @@ sync_store.get('whitelist').then((res) => {
             >Autojoin</button>
         `;
 
+        // trigger autojoining when user confirms //
+        notification.querySelector("#autojoiner-button").addEventListener('click', () => {
+            notification.innerHTML = `<p>Joining...</p>`;
+            autojoinGiveaways(giveaways_to_join);
+        });
+
         sidebar.appendChild(notification);
     }
 });
 
 
+// AUTOJOINING GIVEAWAYS //
+/**
+ * Function responsible for joining the giveaways. It gathers xsrf token from logout button
+ * and extracts giveaway code from the link. Then for each link fires `sendEntryRequest` function.
+ * When everything is done, reloads the page.
+ * @param {Array} links array containing links for giveaways to join 
+ */
+const autojoinGiveaways = async function(links) {
+    const token = document.querySelector(".js__logout").getAttribute("data-form").split("=").at(-1)
+
+    for (let link of links) {
+        await sendEntryRequest(
+            token,
+            link.split('/').at(-2)
+        )
+    }
+
+    location.reload();
+}
+/**
+ * Sends POST request to the Steamgifts API to join the giveaway.
+ * @param {String} xsrf authentication token for steamgifts session.
+ * @param {String} code code of the giveaway to join.
+ */
+const sendEntryRequest = async function(xsrf, code) {
+    fetch("https://www.steamgifts.com/ajax.php", {
+        method : "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With' : 'XMLHttpRequest',
+            'Accept' : "application/json, text/javascript, */*; q=0.01"
+        },
+        body: new URLSearchParams({
+            xsrf_token: xsrf,
+            do : "entry_insert",
+            code : code
+        }).toString()}
+    )
+}
 
