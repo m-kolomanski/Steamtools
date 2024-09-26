@@ -4,10 +4,7 @@ const sync_store = browser.storage.sync;
 // check if sync storage is setup correctly
 sync_store.get('whitelist').then((res) => {
     if (!Array.isArray(res.whitelist)) {
-        console.log('setting up storage')
         sync_store.set({whitelist: [] });
-    } else {
-        console.log("storage setup")
     }
 });
 
@@ -43,3 +40,33 @@ addGameToWhitelist = async function(game_name) {
         });
     }
 }
+
+// SCANNING FOR GAMES TO JOIN
+// TODO: make sure we do not fetch data on every page
+sync_store.get('whitelist').then((res) => {
+    const current_whitelist = res.whitelist;
+    const giveaways_on_page = document.querySelectorAll("a.giveaway__heading__name");
+
+    let games_to_join = [];
+
+    giveaways_on_page.forEach((giveaway) => {
+        const game_name = giveaway.href.split('/').at(-1);
+
+        // check if game is on whitelist //
+        if (current_whitelist.includes(game_name)) {
+
+            // check if game is not already joined //
+            if (!giveaway.parentElement.parentElement.parentElement.classList.contains('is-faded')) {
+                games_to_join.push(giveaway.href);
+            }
+           
+        }
+    });
+
+    // TODO: display notification if there are games to join
+    console.log("detected games to join:")
+    console.log(games_to_join);
+});
+
+
+
