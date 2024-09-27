@@ -105,7 +105,10 @@ const autojoinGiveaways = async function(links) {
         )
     }
 
-    location.reload();
+    // added delay before loading page to account for server processing joins //
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
 }
 /**
  * Sends POST request to the Steamgifts API to join the giveaway.
