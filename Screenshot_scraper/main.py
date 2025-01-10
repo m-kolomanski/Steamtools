@@ -9,7 +9,7 @@ import re
 def message(msg):
     print(f"[{time.ctime()}] {msg}")
 
-def get_profile_url(steamid):
+def getProfileUrl(steamid):
     return f"https://steamcommunity.com/id/{steamid}/screenshots/"
 
 def parseArguments(args):
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         print("Error: No steamid provided. Use --steamid=<steamid>")
         exit()
 
-    profile_url = get_profile_url(arguments["steamid"])
+    profile_url = getProfileUrl(arguments["steamid"])
 
     profile_html = rq.get(profile_url).text
     if "The specified profile could not be found." in profile_html:
