@@ -3,3 +3,6 @@ __pycache__
 *.bat
 *.txt
 *.log
+*pyenv*
+
+!*requirements.txt
