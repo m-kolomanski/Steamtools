@@ -1,5 +1,6 @@
 import json, os, getopt
 import requests as rq
+from copy import deepcopy
 
 class Checker:
     def __init__(self, args):
@@ -119,6 +120,7 @@ class Checker:
         print("Check removed.")
 
     def runChecks(self):
+        updated_appdata = deepcopy(self.appdata)
         checks_with_new_achievements = {}
 
         for check in self.config['checks'].values():
@@ -180,14 +182,15 @@ class Checker:
                     n_achievements = len(data['game']['availableGameStats']['achievements'])
 
                 if not self.appdata[game]['n_achievements']:
-                    self.appdata[game]['n_achievements'] = n_achievements
+                    updated_appdata[game]['n_achievements'] = n_achievements
                 elif self.appdata[game]['n_achievements'] != n_achievements:
                     games_with_new_achievements.append(f"{game} has {n_achievements - self.appdata[game]['n_achievements']} new achievements.")
-                    self.appdata[game]['n_achievements'] = n_achievements
+                    updated_appdata[game]['n_achievements'] = n_achievements
 
             # if any new achievements are present, add to results list #
             if games_with_new_achievements:
                 checks_with_new_achievements[check['email']] = games_with_new_achievements
 
+        self.appdata = updated_appdata
         self.writeAppdata()
         return checks_with_new_achievements
